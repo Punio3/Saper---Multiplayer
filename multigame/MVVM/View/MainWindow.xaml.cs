@@ -19,6 +19,7 @@ namespace multigame
         public MainWindow()
         {
             InitializeComponent();
+            
         }
     }
 }

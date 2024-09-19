@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "multigame", "multigame\multigame.csproj", "{15320545-8A0E-4CE9-BB9D-D2D3A94AAF5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{EB7C7B6B-C725-4CC8-ACCA-5F218F4DAF10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{15320545-8A0E-4CE9-BB9D-D2D3A94AAF5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15320545-8A0E-4CE9-BB9D-D2D3A94AAF5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15320545-8A0E-4CE9-BB9D-D2D3A94AAF5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB7C7B6B-C725-4CC8-ACCA-5F218F4DAF10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB7C7B6B-C725-4CC8-ACCA-5F218F4DAF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB7C7B6B-C725-4CC8-ACCA-5F218F4DAF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB7C7B6B-C725-4CC8-ACCA-5F218F4DAF10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
