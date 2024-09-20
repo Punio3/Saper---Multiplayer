@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:multigame" xmlns:viewmodel="clr-namespace:multigame.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="474" Width="816">
 
     <Window.DataContext>
         <viewmodel:MainViewModel/>
@@ -13,25 +13,41 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="169*"></RowDefinition>
-            <RowDefinition Height="265*"></RowDefinition>
-        </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="1"
-           Grid.Row="1"
-           Grid.ColumnSpan="2"
-           Grid.RowSpan="2"
-           Text="{Binding ServerMessage}"
-           />
-        <Button Grid.Column="0" 
-                Margin="58,112,59,12"
-                Content="Connect"
-                Command="{Binding ConnectToServerCommand}"
-                />
+        </Grid.ColumnDefinitions>
+        <DockPanel>
+            <TextBox Height="25"
+                     DockPanel.Dock="Top"
+                     Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Height="25"
+                    DockPanel.Dock="Top"
+                    Content="Connect"
+                    Command="{Binding ConnectToServerCommand}"/>
+            <ListView ItemsSource="{Binding Users}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding UserName}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+
+        <StackPanel Grid.Column="1">
+            <ListView Height="380"
+                      ItemsSource="{Binding Messages}"/>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBox Height="55"
+                         Width="545"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Width="55"
+                        Content="Send"
+                        Command="{Binding SendMessageCommand}"/>
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </Window>

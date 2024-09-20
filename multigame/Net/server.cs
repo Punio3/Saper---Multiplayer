@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatClient.Net.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -10,17 +11,65 @@ namespace multigame.Net
     class server
     {
         TcpClient _tcpClient;
+        public PacketReader _PacketReader;
+
+        public event Action connectedEvent;
+        public event Action msgReceivedEvent;
+        public event Action userDisconnectEvent;
+
         public server() { 
             _tcpClient = new TcpClient();
         }
 
-        public void ConnectToServer()
+        public void ConnectToServer(string username)
         {
             if(!_tcpClient.Connected)
             {
                 _tcpClient.Connect("127.0.0.1", 7891);
+                _PacketReader = new PacketReader(_tcpClient.GetStream());
+
+                if (!string.IsNullOrEmpty(username))
+                {
+                    PacketBuilder connectPacket = new PacketBuilder();
+                    connectPacket.WriteOpCode(0);
+                    connectPacket.WriteString(username);
+                    _tcpClient.Client.Send(connectPacket.GetPacketBytes());
+                }
+
+                ReadPackets();
             }
         }
 
+        public void SendMessageToServer(string message)
+        {
+            PacketBuilder packetBuilder = new PacketBuilder();
+            packetBuilder.WriteOpCode(5);
+            packetBuilder.WriteString(message);
+            _tcpClient.Client.Send(packetBuilder.GetPacketBytes());
+        }
+
+        public void ReadPackets()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    var opcode=_PacketReader.ReadByte();
+                    switch(opcode)
+                    {
+                        case 1:
+                            connectedEvent?.Invoke();
+                            break;
+                        case 5:
+                            msgReceivedEvent?.Invoke(); 
+                            break;
+                        default:
+                            Console.WriteLine("ah yes..");
+                            break;
+                    }
+                }
+
+            });
+        }
     }
 }
