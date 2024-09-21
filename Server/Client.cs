@@ -43,7 +43,9 @@ namespace Server
                 }
                 catch (Exception)
                 {
-                    
+                    Console.WriteLine($"{UID.ToString()}: Disconnected {username}");
+                    Program.BroadCastDisconnect(UID.ToString());
+                    ClientSocket.Close();
                     break;
                 }           
             }

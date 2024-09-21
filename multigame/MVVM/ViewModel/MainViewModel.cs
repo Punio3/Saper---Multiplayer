@@ -1,5 +1,6 @@
 ﻿using multigame.MVVM.Core;
 using multigame.MVVM.Model;
+using multigame.MVVM.View;
 using multigame.Net;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -23,8 +24,29 @@ namespace multigame.MVVM.ViewModel
             Messages = new ObservableCollection<String>();  
             _server.connectedEvent += UserConnected;
             _server.msgReceivedEvent += MessageReceived;
+            _server.userDisconnectEvent += userDisconnect;
+            _server.StartGame += Startgame;
             ConnectToServerCommand = new RelayCommand(o => _server.ConnectToServer(Username));
             SendMessageCommand = new RelayCommand(o => _server.SendMessageToServer(Message));
+        }
+
+        private void Startgame()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Get the current MainWindow instance
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+
+            // Ensure the ContentControl is updated on the UI thread
+            
+                mainWindow.StartGame();
+            });
+        }
+        private void userDisconnect()
+        {
+            var uid = _server._PacketReader.ReadMessage();
+            var user = Users.Where(x => x.UID == uid).FirstOrDefault();
+            Application.Current.Dispatcher.Invoke(() => Users.Remove(user));
         }
 
         private void MessageReceived()
@@ -47,7 +69,7 @@ namespace multigame.MVVM.ViewModel
             }
         }
 
-
+        
     }
 }
 
