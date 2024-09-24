@@ -25,7 +25,7 @@ namespace Server
 
                 BroadCastConnection();
 
-                if (_users.Count == 4 && !isGameStarted)
+                if (_users.Count == 2 && !isGameStarted)
                 {
                     Task.Run(() => StartGame());
                 }
