@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using multigame.GameLogic;
 using multigame.MVVM.View.GameUI;
+using multigame.MVVM.ViewModel;
+using multigame.Net;
 
 namespace multigame.MVVM.View
 {
@@ -26,8 +28,8 @@ namespace multigame.MVVM.View
         private readonly Image[,] GrassImages = new Image[10, 10];
         private readonly Image[,] FlagsImages = new Image[10, 10];
         private readonly Image[,] BombsAndNumbersImages = new Image[10, 10];
-
-        private GameState game;
+        private MainViewModel _mainViewModel;
+        public GameState game {  get; set; }
         public Game2()
         {
             InitializeComponent();
@@ -36,6 +38,23 @@ namespace multigame.MVVM.View
             DrawBoard(game.board);
             WinText.Visibility = Visibility.Hidden;
             LoseText.Visibility = Visibility.Hidden;
+            Loaded += Game2_Loaded;
+        }
+
+        private void Game2_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Ensure the DataContext is of type MainViewModel
+            _mainViewModel = this.DataContext as MainViewModel;
+            if (_mainViewModel != null)
+            {
+                // Now you can access _mainViewModel and its properties/methods
+                // Example: _mainViewModel.SomeProperty or _mainViewModel.SomeMethod();
+            }
+            else
+            {
+                // Handle case where DataContext is not set or is not of type MainViewModel
+                MessageBox.Show("DataContext is not set or is not of type MainViewModel.");
+            }
         }
 
         private void InitializeBoard()
@@ -86,26 +105,28 @@ namespace multigame.MVVM.View
             }
         }
 
-        private void MouseDown_Grid(object sender, MouseButtonEventArgs eventArgs)
+        public void MouseDown_Grid(object sender, MouseButtonEventArgs eventArgs)
         {
 
 
             Point point = eventArgs.GetPosition(BoardGrid);
             Position pos = ToSquarePosition(point);
-            if (game.board.GameEnd == GameEndsOption.running)
+            if (game.board.GameEnd == GameEndsOption.running && game.CanMove)
             {
                 if (eventArgs.ChangedButton == MouseButton.Left)
                 {
                     HandleLeftClick(pos);
+                    game.board.LastMove = pos;
+                    _mainViewModel.SendMoveToServer.Execute(game);
                 }
                 else if (eventArgs.ChangedButton == MouseButton.Right)
                 {
                     HandleRightClick(pos);
                 }
-            }
+            }       
         }
 
-        private void HandleLeftClick(Position pos)
+        public void HandleLeftClick(Position pos)
         {
             game.board.DiscoverBlock(pos);
             if (game.board.GameEnd != GameEndsOption.lose)
@@ -115,6 +136,7 @@ namespace multigame.MVVM.View
             if (game.board.GameEnd == GameEndsOption.win) WinText.Visibility = Visibility.Visible;
             else if (game.board.GameEnd == GameEndsOption.lose) LoseText.Visibility = Visibility.Visible;
             DrawBoard(game.board);
+
         }
 
         private void HandleRightClick(Position pos)

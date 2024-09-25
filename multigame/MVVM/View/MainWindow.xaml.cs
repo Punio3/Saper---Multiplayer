@@ -1,34 +1,33 @@
 ﻿using multigame.MVVM.View;
-using System.Text;
+using multigame.MVVM.ViewModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace multigame
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _mainViewModel;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // Inicjalizacja MainViewModel raz
+            _mainViewModel = new MainViewModel();
+
+            // Przypisanie MainViewModel jako DataContext dla MainWindow
+            this.DataContext = _mainViewModel;
         }
 
         public void StartGame()
         {
-            // Create a new instance of your GameView
             var gameView = new Game2();
 
-            // Set the ContentControl's content to the new view
+            // Przekazanie MainViewModel do Game2
+            gameView.DataContext = _mainViewModel;
+
             MenuContainer.Content = gameView;
+            ((App)Application.Current).CurrentGame = gameView;
         }
     }
 }

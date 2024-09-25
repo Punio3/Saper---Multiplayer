@@ -7,7 +7,7 @@ using System.Windows.Documents;
 
 namespace multigame.GameLogic
 {
-    class BackGround
+    public class BackGround
     {
         public int size;
         public Block[,] board;

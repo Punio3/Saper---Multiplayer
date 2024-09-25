@@ -7,23 +7,22 @@ using System.Threading.Tasks;
 
 namespace multigame
 {
-    class GameState
+    public class GameState
     {
         public Board board { get; set; }
         public BackGround BackGround { get; set; }
-        public String WhoMoves { get; set; }
+        public bool CanMove { get; set; }
 
         public GameState(int size) 
         { 
             board = new Board(size);
             BackGround=new BackGround(size);
             BackGround.InitializeBackGround();
-
         }
 
-        public void WhoMovesUpdate(String PlayerName)
+        public void WhoMovesUpdate(bool change)
         {
-            WhoMoves = PlayerName;
+            CanMove = change;
         }
     }
 }

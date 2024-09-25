@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace multigame
 {
-    class Board
+    public class Board
     {
         public int size;
         public int AmountOfBombs=0;
@@ -15,6 +15,7 @@ namespace multigame
         public BombsAndNumbers[,] BombsAndNumbers;
         public int DiscoveredBlocks;
         public GameEndsOption GameEnd;
+        public Position LastMove;
         public Board(int Size)
         {
             size = Size;
@@ -105,13 +106,14 @@ namespace multigame
             if (board[pos.x, pos.y].isClicked == false && board[pos.x, pos.y].isFlagged == false)
             {
                 BlockType tmp = BombsAndNumbers[pos.x, pos.y].Type;
+                
                 if (tmp == BlockType.bomb)
                 {
                     board[pos.x, pos.y].isClicked = true;
                     GameEnd = GameEndsOption.lose;
                 }
                 else if (tmp == BlockType.number)
-                {
+                {                    
                     DiscoveredBlocks++;
                     board[pos.x, pos.y].isClicked = true;
                     if (BombsAndNumbers[pos.x, pos.y].AmountOfBombs == 0)

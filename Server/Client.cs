@@ -37,6 +37,11 @@ namespace Server
                             Console.WriteLine($"{DateTime.Now}: Message received: {msg}");
                             Program.BroadCastMessage($"{DateTime.Now}: {username}: {msg}");
                             break;
+                        case 10:
+                            Point tmp=new Point(_packetReader.ReadInt(),_packetReader.ReadInt());
+                            Console.WriteLine($"{DateTime.Now}: {username} make move: ({tmp.x},{tmp.y})");
+                            Program.BroadCastSendGameState(new GameState(tmp));
+                            break;
                         default:
                             break;
                     }

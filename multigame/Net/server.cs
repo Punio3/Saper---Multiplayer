@@ -12,7 +12,8 @@ namespace multigame.Net
         public event Action msgReceivedEvent;
         public event Action userDisconnectEvent;
         public event Action StartGame;
-
+        public event Action WhoStartGame;
+        public event Action Makemove;
         public server() { 
             _tcpClient = new TcpClient();
         }
@@ -43,6 +44,22 @@ namespace multigame.Net
             packetBuilder.WriteString(message);
             _tcpClient.Client.Send(packetBuilder.GetPacketBytes());
         }
+        public void SendGameStateToServer(GameState gameState)
+        {
+            PacketBuilder packetBuilder = new PacketBuilder();
+            packetBuilder.WriteOpCode(10);
+            packetBuilder.WriteInteger(gameState.board.LastMove.x);
+            packetBuilder.WriteInteger(gameState.board.LastMove.y);
+            _tcpClient.Client.Send(packetBuilder.GetPacketBytes());
+
+        }
+        public void TESTEVENT()
+        {
+            PacketBuilder packetBuilder = new PacketBuilder();
+            packetBuilder.WriteOpCode(5);
+            packetBuilder.WriteString("TEST");
+            _tcpClient.Client.Send(packetBuilder.GetPacketBytes());
+        }
 
         public void ReadPackets()
         {
@@ -64,6 +81,12 @@ namespace multigame.Net
                             break;
                         case 15:
                             StartGame?.Invoke();
+                            break;
+                        case 20:
+                            Makemove?.Invoke();
+                            break;
+                        case 25:
+                            WhoStartGame?.Invoke();
                             break;
                         default:
                             Console.WriteLine("ah yes..");

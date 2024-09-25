@@ -24,5 +24,11 @@ namespace ChatServer.Net.IO
             var msg = Encoding.ASCII.GetString(msgBuffer);
             return msg;
         }
+
+        public int ReadInt()
+        {
+            return ReadInt32();
+        }
+
     }
 }

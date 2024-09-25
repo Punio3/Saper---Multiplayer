@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:multigame.MVVM.View"
+             xmlns:viewmodel="clr-namespace:multigame.MVVM.ViewModel"
              mc:Ignorable="d"                 
-             d:DesignHeight="450" d:DesignWidth="800"    
+             d:DesignHeight="450" d:DesignWidth="800"
              Background="Gray">
+
     <Grid>
         <!-- Definicja dwóch wierszy, gdzie górny zajmuje 20%, a dolny 80% wysokości -->
         <Grid.RowDefinitions>
@@ -17,10 +19,11 @@
         <!-- Górna sekcja na informacje o turze i liczniku -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Background="LightGray" HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Informacja o turze -->
-            <TextBlock Text="Kogo tura: Gracz 1" FontSize="16" Margin="10" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding UsernameWhoMoves, StringFormat='Kogo tura: {0}'}" FontSize="16" Margin="10" VerticalAlignment="Center"/>
 
             <!-- Licznik czasu -->
             <TextBlock Text="Czas: 00:00" FontSize="16" Margin="10" VerticalAlignment="Center"/>
+            <Button Content="test" Command="{Binding TESTBUTTON}"></Button>
         </StackPanel>
 
         <!-- Dolna sekcja na planszę z Viewboxem, który skaluje całą zawartość -->
@@ -28,7 +31,8 @@
             <Grid Background="DarkGray" x:Name="BoardGrid"
               Width="300"
               Height="300"
-          MouseDown="MouseDown_Grid">
+              MouseDown="MouseDown_Grid">
+
 
                 <UniformGrid x:Name="BlocksGrid"
                          Rows="10"
