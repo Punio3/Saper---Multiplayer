@@ -19,9 +19,9 @@ namespace multigame
             this.DataContext = _mainViewModel;
         }
 
-        public void StartGame()
+        public void StartGame(int[,] board,int size)
         {
-            var gameView = new Game2();
+            var gameView = new Game2(board,size);
 
             // Przekazanie MainViewModel do Game2
             gameView.DataContext = _mainViewModel;

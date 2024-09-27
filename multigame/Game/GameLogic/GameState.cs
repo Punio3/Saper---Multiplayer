@@ -13,9 +13,9 @@ namespace multigame
         public BackGround BackGround { get; set; }
         public bool CanMove { get; set; }
 
-        public GameState(int size) 
+        public GameState(int[,] Board,int size) 
         { 
-            board = new Board(size);
+            board = new Board(Board,size);
             BackGround=new BackGround(size);
             BackGround.InitializeBackGround();
         }

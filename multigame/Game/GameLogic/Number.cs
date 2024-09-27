@@ -21,5 +21,9 @@ namespace multigame.GameLogic
         {
             _amountOfBombs = 0;
         }
+        public Number(int number)
+        {
+            _amountOfBombs = number;
+        }
     }
 }

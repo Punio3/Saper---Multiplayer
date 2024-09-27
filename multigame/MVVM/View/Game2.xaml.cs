@@ -30,10 +30,10 @@ namespace multigame.MVVM.View
         private readonly Image[,] BombsAndNumbersImages = new Image[10, 10];
         private MainViewModel _mainViewModel;
         public GameState game {  get; set; }
-        public Game2()
+        public Game2(int[,] BombsAndNumbers,int size)
         {
             InitializeComponent();
-            game = new GameState(10);
+            game = new GameState(BombsAndNumbers,size);
             InitializeBoard();
             DrawBoard(game.board);
             WinText.Visibility = Visibility.Hidden;

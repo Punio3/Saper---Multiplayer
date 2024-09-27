@@ -16,15 +16,14 @@ namespace multigame
         public int DiscoveredBlocks;
         public GameEndsOption GameEnd;
         public Position LastMove;
-        public Board(int Size)
+        public Board(int[,] bombsandnumbers,int Size)
         {
             size = Size;
             board = new GrassAndFlags[Size, Size];
             BombsAndNumbers=new BombsAndNumbers[Size,Size];
             GameEnd = GameEndsOption.running;
-            InitializeBoard();
-            AddBombs(10);
-            CalculateBombs(size);
+            InitializeBoard(bombsandnumbers);
+
         }
 
         public GrassAndFlags this[int row, int col]
@@ -33,7 +32,7 @@ namespace multigame
             set { board[row, col] = value; }
         }
 
-        public void InitializeBoard()
+        public void InitializeBoard(int[,] bombsandnumbers)
         {
             for(int i=0;i<size; i++)
             {
@@ -42,56 +41,19 @@ namespace multigame
                     if ((i + j) % 2 == 0) board[i, j] = new GrassLight();
                     else board[i, j] = new GrassDark();
 
-                    BombsAndNumbers[i,j] = new Number();
-                }
-            }
-
-        }
-
-        private void AddBombs(int amountofbombs)
-        {
-            Random random = new Random();
-            int x, y;
-            while (AmountOfBombs < amountofbombs)
-            {
-                x = random.Next(0, 10);
-                y = random.Next(0, 10);
-                if (BombsAndNumbers[x, y].Type != BlockType.bomb)
-                {
-                    BombsAndNumbers[x, y] = new Bomb();
-                    AmountOfBombs++;
-                }
-            }
-        }
-
-        private void CalculateBombs(int width)
-        {
-
-            for (int k = 0; k < width; k++)
-            {
-                for (int i = 0; i < width; i++)
-                {
-                    if (BombsAndNumbers[k, i].Type != BlockType.bomb)
+                    if (bombsandnumbers[i, j] == -1)
                     {
-                        for (int z = k - 1; z <= k + 1; z++)
-                        {
-                            for (int p = i - 1; p <= i + 1; p++)
-                            {
-                                if (z != k || p != i)
-                                {
-                                    if (IsInBoardSize(z, p))
-                                    {
-                                        if (BombsAndNumbers[z, p].Type == BlockType.bomb) BombsAndNumbers[k, i].AmountOfBombs++;
-                                    }
-                                }
-                            }
-                        }
-
+                        BombsAndNumbers[i, j] = new Bomb();
                     }
+                    else
+                    {
+                        BombsAndNumbers[i, j] = new Number(bombsandnumbers[i,j]);
+                    }
+                    
                 }
             }
-        }
 
+        }
         public bool IsInBoardSize(int x, int y)
         {
 

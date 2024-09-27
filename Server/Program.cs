@@ -3,6 +3,8 @@ using System.Net;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using ChatServer.Net.IO;
+using System;
+using System.Drawing;
 
 namespace Server
 {
@@ -127,16 +129,79 @@ namespace Server
             BroadCastMessage($"{disconnectedUser.username}: Disconnected");
         }
 
-        public static void BroadCastGameScene()
+        public static void BroadCastGameScene(int[,] board,int size)
         {
             foreach (Client client in _users)
             {
                 var BroadCastPacket = new PacketBuilder();
                 BroadCastPacket.WriteOpCode(15);
+                BroadCastPacket.WriteMessage(size);
+                for(int i=0; i<size; i++)
+                {
+                    for(int j=0; j<size; j++)
+                    {
+                        BroadCastPacket.WriteMessage(board[i, j]);
+                    }
+                }
                 client.ClientSocket.Client.Send(BroadCastPacket.GetPacketBytes());
             }
         }
 
+        public static int[,] CreateBoardBombs(int size,int amountofbombs)
+        {
+            Random random = new Random();
+            int x, y;
+            int AmountOfBombs = 0;
+            int[,] board = new int[size, size];
+            while (AmountOfBombs < amountofbombs)
+            {
+                x = random.Next(0, size);
+                y = random.Next(0, size);
+                if (board[x,y] != -1)
+                {
+                    board[x, y] = -1;
+                    AmountOfBombs++;
+                }
+            }
+            return CountBombs(board,size);
+        }
+
+        public static int[,] CountBombs(int[,] board,int size)
+        {
+            for (int k = 0; k < size; k++)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    if (board[k,i]!=-1)
+                    {
+                        board[k, i] = 0;
+                        for (int z = k - 1; z <= k + 1; z++)
+                        {
+                            for (int p = i - 1; p <= i + 1; p++)
+                            {
+                                if (z != k || p != i)
+                                {
+                                    if (IsInBoardSize(z, p,size))
+                                    {
+                                        if (board[z,p] == -1) board[k,i]++;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            return board;
+        }
+        public static bool IsInBoardSize(int x, int y,int size)
+        {
+
+            if (x < 0 || x > size - 1) return false;
+            else if (y < 0 || y > size - 1) return false;
+            else return true;
+
+        }
         public static async Task StartGame()
         {
             int iteration = 4;
@@ -149,7 +214,8 @@ namespace Server
                 await Task.Delay(1000);
             }
             isGameStarted = true;
-            BroadCastGameScene();
+
+            BroadCastGameScene(CreateBoardBombs(10,10),10);
             BroadCastSendWhoStartGame(_users[WhoMoves].username);
             Console.WriteLine($"{DateTime.Now}: {_users[WhoMoves].username} starting game");
         }

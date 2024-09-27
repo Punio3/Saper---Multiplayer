@@ -61,6 +61,15 @@ namespace multigame.MVVM.ViewModel
 
         private void Startgame()
         {
+            int size = _server._PacketReader.ReadInt32();
+            int[,] board = new int[size, size];
+            for(int i=0;i<size; i++)
+            {
+                for(int j = 0; j < size; j++)
+                {
+                    board[i, j] = _server._PacketReader.ReadInt32();
+                }
+            }
             Application.Current.Dispatcher.Invoke(() =>
             {
                 // Get the current MainWindow instance
@@ -68,7 +77,7 @@ namespace multigame.MVVM.ViewModel
 
             // Ensure the ContentControl is updated on the UI thread
             
-                mainWindow.StartGame();
+                mainWindow.StartGame(board,size);
             });
         }
         private void WhoStartGame()
