@@ -29,5 +29,10 @@ namespace multigame
             MenuContainer.Content = gameView;
             ((App)Application.Current).CurrentGame = gameView;
         }
+
+        public void StartQueue()
+        {
+            MenuContainer.Content = null;
+        }
     }
 }

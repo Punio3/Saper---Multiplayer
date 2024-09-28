@@ -27,6 +27,10 @@
                     DockPanel.Dock="Top"
                     Content="Connect"
                     Command="{Binding ConnectToServerCommand}"/>
+                <Button Height="25"
+                    DockPanel.Dock="Top"
+                    Content="Ready"
+                    Command="{Binding ReadyToStartGameCommand}"/>
                 <ListView ItemsSource="{Binding Users}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

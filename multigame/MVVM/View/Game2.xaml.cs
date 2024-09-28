@@ -57,6 +57,7 @@ namespace multigame.MVVM.View
             }
         }
 
+
         private void InitializeBoard()
         {
             for (int k = 0; k < 10; k++)
@@ -118,6 +119,7 @@ namespace multigame.MVVM.View
                     HandleLeftClick(pos);
                     game.board.LastMove = pos;
                     _mainViewModel.SendMoveToServer.Execute(game);
+                    _mainViewModel._gameTimer.StopTimer();
                 }
                 else if (eventArgs.ChangedButton == MouseButton.Right)
                 {
@@ -129,12 +131,18 @@ namespace multigame.MVVM.View
         public void HandleLeftClick(Position pos)
         {
             game.board.DiscoverBlock(pos);
-            if (game.board.GameEnd != GameEndsOption.lose)
+            if (game.board.GameEnd != GameEndsOption.lose) game.board.CheckWin();
+            
+            if (game.board.GameEnd == GameEndsOption.win)
             {
-                game.board.CheckWin();
+                WinText.Visibility = Visibility.Visible;
+                _mainViewModel.SendEndGameType.Execute(game.board.GameEnd);
             }
-            if (game.board.GameEnd == GameEndsOption.win) WinText.Visibility = Visibility.Visible;
-            else if (game.board.GameEnd == GameEndsOption.lose) LoseText.Visibility = Visibility.Visible;
+            else if (game.board.GameEnd == GameEndsOption.lose)
+            {
+                LoseText.Visibility = Visibility.Visible;
+                _mainViewModel.SendEndGameType.Execute(game.board.GameEnd);
+            }
             DrawBoard(game.board);
 
         }

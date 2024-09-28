@@ -1,4 +1,5 @@
-﻿using multigame.GameLogic;
+﻿using multigame.Game.GameLogic;
+using multigame.GameLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;

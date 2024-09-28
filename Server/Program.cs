@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using ChatServer.Net.IO;
 using System;
 using System.Drawing;
+using System.Security.Cryptography;
 
 namespace Server
 {
@@ -14,13 +15,15 @@ namespace Server
         static TcpListener _listener;
         static List<Client> _users;
         static int WhoMoves;
-        static bool isGameStarted;
-        static int AmountPlayersToStartGame;
+        public static bool isGameStarted;
+        public static int AmountPlayersToStartGame;
         static GameState gameState;
+        public static int AmountPlayersReadyToStartGame;
         static void Main(string[] args)
         {
             _users = new List<Client>();
             AmountPlayersToStartGame = 2;
+            AmountPlayersReadyToStartGame = 0;
             isGameStarted = false;
             _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7891);
             _listener.Start();
@@ -32,10 +35,6 @@ namespace Server
                 BroadCastConnection();
                 BroadCastConnectionMessage(client);
 
-                if (_users.Count == AmountPlayersToStartGame && !isGameStarted)
-                {
-                    Task.Run(() => StartGame());
-                }
             }
         }
 
@@ -129,6 +128,14 @@ namespace Server
             BroadCastMessage($"{disconnectedUser.username}: Disconnected");
         }
 
+        public static void BroadCastReturnClientToQueue(Guid Uid)
+        {
+            var User = _users.Where(x => x.UID == Uid).FirstOrDefault();
+            var broadcastPacket = new PacketBuilder();
+            broadcastPacket.WriteOpCode(40);
+            User.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
+        }
+
         public static void BroadCastGameScene(int[,] board,int size)
         {
             foreach (Client client in _users)
@@ -208,6 +215,7 @@ namespace Server
             WhoMoves = 0;
 
             Console.WriteLine($"{DateTime.Now}: Game starting");
+            BroadCastMessage("Server: New game starting");
             for (int k = iteration; k >= 0; k--)
             {
                 BroadCastMessage("Server: Time to start game: " + k.ToString());

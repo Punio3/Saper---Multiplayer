@@ -14,6 +14,7 @@ namespace multigame.Net
         public event Action StartGame;
         public event Action WhoStartGame;
         public event Action Makemove;
+        public event Action ReturnToQueue;
         public server() { 
             _tcpClient = new TcpClient();
         }
@@ -36,7 +37,12 @@ namespace multigame.Net
                 ReadPackets();
             }
         }
-
+        public void SendReadyToStartGame()
+        {
+            PacketBuilder packetbuilder=new PacketBuilder();
+            packetbuilder.WriteOpCode(20);
+            _tcpClient.Client.Send(packetbuilder.GetPacketBytes());
+        }
         public void SendMessageToServer(string message)
         {
             PacketBuilder packetBuilder = new PacketBuilder();
@@ -52,6 +58,15 @@ namespace multigame.Net
             packetBuilder.WriteInteger(gameState.board.LastMove.y);
             _tcpClient.Client.Send(packetBuilder.GetPacketBytes());
 
+        }
+
+        public void SendWinOrLoseInfoToServer(GameEndsOption EndType)
+        {
+            PacketBuilder packetBuilder = new PacketBuilder();
+            packetBuilder.WriteOpCode(15);
+            if(EndType==GameEndsOption.win) packetBuilder.WriteInteger(1);
+            else if(EndType==GameEndsOption.lose) packetBuilder.WriteInteger(0);
+            _tcpClient.Client.Send(packetBuilder.GetPacketBytes());
         }
         public void TESTEVENT()
         {
@@ -87,6 +102,9 @@ namespace multigame.Net
                             break;
                         case 25:
                             WhoStartGame?.Invoke();
+                            break;
+                        case 40:
+                            ReturnToQueue?.Invoke();
                             break;
                         default:
                             Console.WriteLine("ah yes..");

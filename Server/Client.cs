@@ -42,6 +42,25 @@ namespace Server
                             Console.WriteLine($"{DateTime.Now}: {username} make move: ({tmp.x},{tmp.y})");
                             Program.BroadCastSendGameState(new GameState(tmp));
                             break;
+                        case 15:
+                            int EndType=_packetReader.ReadInt();
+                            if(EndType==0) Console.WriteLine($"{DateTime.Now}: {username} lost game");
+                            else if(EndType==1) Console.WriteLine($"{DateTime.Now}: {username} won game");
+                            Program.isGameStarted = false;
+                            Program.AmountPlayersReadyToStartGame--;
+                            Program.BroadCastReturnClientToQueue(UID);
+                            break;
+                        case 20:
+                            Program.AmountPlayersReadyToStartGame++;
+                            string Text= $"{Program.AmountPlayersReadyToStartGame}/{Program.AmountPlayersToStartGame}";
+                            Console.WriteLine($"{DateTime.Now}: {username} is ready. " +
+                            $"Ready Players ({Text}).");
+                            Program.BroadCastMessage($"{DateTime.Now}: {username} is ready. Ready Players ({Text}) ");
+                            if ( Program.AmountPlayersReadyToStartGame == Program.AmountPlayersToStartGame && !Program.isGameStarted)
+                            {
+                                Task.Run(() => Program.StartGame());
+                            }
+                            break;
                         default:
                             break;
                     }

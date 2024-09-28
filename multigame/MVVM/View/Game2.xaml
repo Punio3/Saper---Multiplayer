@@ -22,7 +22,7 @@
             <TextBlock Text="{Binding UsernameWhoMoves, StringFormat='Kogo tura: {0}'}" FontSize="16" Margin="10" VerticalAlignment="Center"/>
 
             <!-- Licznik czasu -->
-            <TextBlock Text="Czas: 00:00" FontSize="16" Margin="10" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding TimeSpentInGame, StringFormat='Czas: {0}'}" FontSize="16" Margin="10" VerticalAlignment="Center"/>
             <Button Content="test" Command="{Binding TESTBUTTON}"></Button>
         </StackPanel>
 
